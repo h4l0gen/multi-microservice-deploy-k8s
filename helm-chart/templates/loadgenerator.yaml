@@ -68,12 +68,12 @@ spec:
           readOnlyRootFilesystem: true
         image: {{ .Values.images.repository }}/{{ .Values.loadgenerator.name }}:{{ .Values.images.tag }}
         env:
-        - name: FRONTEND_ADDR
-          value: "frontend:80"
-        - name: USERS
-          value: "10"
-        - name: RATE
-          value: "1"
+          - name: FRONTEND_ADDR
+            value: "frontend:80"
+          - name: USERS
+            value: "10"
+          - name: RATE
+            value: "1"
         resources:
           {{- toYaml .Values.emailService.resources | nindent 10 }}
 ---

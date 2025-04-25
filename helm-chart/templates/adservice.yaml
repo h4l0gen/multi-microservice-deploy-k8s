@@ -33,8 +33,8 @@ spec:
         ports:
         - containerPort: 9555
         env:
-        - name: PORT
-          value: "9555"
+          - name: PORT
+            value: "9555"
         resources:
           {{- toYaml .Values.emailService.resources | nindent 10 }}
         readinessProbe:
