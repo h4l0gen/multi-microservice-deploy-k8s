@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.paymentService.name }}
+  labels:
+    app: {{ .Values.paymentService.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.paymentService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.paymentService.name }}
+    spec:
+      serviceAccountName: {{ .Values.paymentService.name }}
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: {{ .Values.images.repository }}/{{ .Values.paymentService.name }}:{{ .Values.images.tag }}
+        ports:
+        - containerPort: 50051
+        env:
+        - name: PORT
+          value: "50051"
+        - name: DISABLE_PROFILER
+          value: "1"
+        readinessProbe:
+          grpc:
+            port: 50051
+        livenessProbe:
+          grpc:
+            port: 50051
+        resources:
+          {{- toYaml .Values.emailService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.paymentService.name }}
+  labels:
+    app: {{ .Values.paymentService.name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.paymentService.name }}
+  ports:
+  - name: grpc
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.paymentService.name }}

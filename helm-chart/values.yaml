@@ -1,0 +1,137 @@
+emailService:
+  name: emailservice
+  namespace: default
+  resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+checkoutService:
+  name: checkoutservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+recommendationService:
+  name: recommendationservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 220Mi
+    limits:
+      cpu: 200m
+      memory: 450Mi
+
+frontend:
+  name: frontend
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+paymentService:
+  name: paymentservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+productcatalogService:
+  name: productcatalogservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+cartService:
+  name: cartservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 128Mi
+
+rediscart:
+  name: redis-cart
+  namespace: default
+  resources:
+    requests:
+      cpu: 256m
+      memory: 125Mi
+    limits:
+      cpu: 70m
+      memory: 200Mi
+  image:
+    value: redis:alpine
+
+loadgenerator:
+  name: loadgenerator
+  namespace: default
+  resources:
+    requests:
+      cpu: 300m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+currencyService:
+  name: currencyservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+shippingService:
+  name: shippingservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+adService:
+  name: adservice
+  namespace: default
+  resources:
+    requests:
+      cpu: 200m
+      memory: 180Mi
+    limits:
+      cpu: 300m
+      memory: 300Mi
+
+images:
+  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
+  tag: v0.10.2

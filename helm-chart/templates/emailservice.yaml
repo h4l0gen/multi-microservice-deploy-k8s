@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.emailService.name }}
+  namespace: {{ .Values.emailService.namespace }}
+  labels:
+    app: {{ .Values.emailService.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.emailService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.emailService.name }}
+    spec:
+      serviceAccountName: {{ .Values.emailService.name }}
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: {{ .Values.images.repository }}/{{ .Values.emailService.name }}:{{ .Values.images.tag }}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: DISABLE_PROFILER
+          value: "1"
+        # I am not ready yet, do not set traffic to me, service!
+        readinessProbe:
+          periodSeconds: 5
+          grpc:
+            port: 8080
+        # I'm still healthy
+        livenessProbe:
+          periodSeconds: 5
+          grpc:
+            port: 8080
+        resources:
+          {{- toYaml .Values.emailService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.emailService.name }}
+  namespace: {{ .Values.emailService.namespace }}
+  labels:
+    app: {{ .Values.emailService.name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.emailService.name }}
+  ports:
+  - name: grpc
+    port: 5000
+    targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.emailService.name }}

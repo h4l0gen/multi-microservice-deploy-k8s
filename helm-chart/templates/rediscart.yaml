@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.rediscart.name }}
+  labels:
+    app: {{ .Values.rediscart.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.rediscart.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.rediscart.name }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: redis
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: {{ .Values.rediscart.image.value }}
+        ports:
+        - containerPort: 6379
+        readinessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        livenessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+        resources:
+          {{- toYaml .Values.emailService.resources | nindent 10 }}
+      volumes:
+      - name: redis-data
+        emptyDir: {}       # it is using emptyDir, that means not using PV, this store in node local storage and will stay till pod runs.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.rediscart.name }}
+  labels:
+    app: {{ .Values.rediscart.name }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.rediscart.name }}
+  ports:
+  - name: tcp-redis
+    port: 6379
+    targetPort: 6379
