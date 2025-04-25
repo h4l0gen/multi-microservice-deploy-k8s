@@ -74,9 +74,6 @@ spec:
               value: "This application is deployed by Kapil Sharma"
           resources:
             {{- toYaml .Values.emailService.resources | nindent 10 }}
-
-# these two services have same port, but different IPs hence no conflicts. Also these type of setup
-# can be used when same information needs to be send internally(clusterIP) $ externally(loadbalancer).
 ---
 apiVersion: v1
 kind: Service
