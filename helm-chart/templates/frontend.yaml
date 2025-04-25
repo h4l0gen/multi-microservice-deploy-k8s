@@ -73,7 +73,7 @@ spec:
             - name: FRONTEND_MESSAGE
               value: "This application is deployed by Kapil Sharma"
           resources:
-            {{- toYaml .Values.emailService.resources | nindent 10 }}
+            {{- toYaml .Values.emailService.resources | nindent 12 }}
 ---
 apiVersion: v1
 kind: Service
