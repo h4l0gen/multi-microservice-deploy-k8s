@@ -2,7 +2,7 @@
 resource "aws_security_group" "kapil_sg" {
   name        = "kapil-allow-ssh"
   description = "Allow SSH inbound traffic"
-  vpc_id      = "vpc-0d17aea713268ea8d" 
+  vpc_id      = "vpc-0f786d8d14ef29340" 
 
   ingress {
     description = "SSH from anywhere"

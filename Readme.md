@@ -22,3 +22,8 @@ aws ec2 get-console-output --instance-id i-03689a644b8a6e140
 aws ec2 describe-instances --instance-ids i-03689a644b8a6e14  --query 'Reservations[0].Instances[0].State'
 
 
+
+
+
+
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash

@@ -84,10 +84,11 @@ spec:
           # - name: PACKAGING_SERVICE_URL
           #   value: "" # This value would look like "http://123.123.123"
           resources:
-          {{- toYaml .Values.emailService.resources | nindent 10 }}
----
+            {{- toYaml .Values.emailService.resources | nindent 10 }}
+
 # these two services have same port, but different IPs hence no conflicts. Also these type of setup
 # can be used when same information needs to be send internally(clusterIP) $ externally(loadbalancer).
+---
 apiVersion: v1
 kind: Service
 metadata:
