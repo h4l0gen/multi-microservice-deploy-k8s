@@ -67,5 +67,20 @@ curl https://raw.githubusercontent.com/projectcalico/calico/v3.29.3/manifests/ca
 sleep 30
 kubectl apply -f calico.yaml
 
+# Install Helm
+curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+apt-get install apt-transport-https --yes
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+apt-get update
+apt-get install -y helm
+
+# cloning the repository
+git clone https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
+cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
+
 # untaint kubectl control plane node
-kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
+## TODO
+# kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
+
+# deploying workload
+# helm install kapil-server .
