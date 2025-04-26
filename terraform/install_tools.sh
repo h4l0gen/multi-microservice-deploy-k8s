@@ -75,9 +75,10 @@ apt-get update
 apt-get install -y helm
 
 # cloning the repository
+cd $USER_HOME
 git clone https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
-
+helm install kapil-server .
 # untaint kubectl control plane node
 ## TODO
 # kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-

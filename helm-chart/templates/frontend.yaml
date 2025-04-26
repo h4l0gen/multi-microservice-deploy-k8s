@@ -104,7 +104,7 @@ spec:
   - name: http
     port: 80
     targetPort: 8080
-    nodePort: 31158
+    nodePort: 30556
 ---
 apiVersion: v1
 kind: ServiceAccount
