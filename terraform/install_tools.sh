@@ -79,7 +79,15 @@ kubectl label namespace default istio-injection=enabled
 
 # cloning the repository
 cd $USER_HOME
-git clone https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
+git clone -b dev https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
+
+
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-*/
+export PATH=$PWD/bin:$PATH
+
+istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
+
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
 helm install kapil-server .   # this is not done, taint is also not done.
 # untaint kubectl control plane node
@@ -90,8 +98,8 @@ helm install kapil-server .   # this is not done, taint is also not done.
 # helm install kapil-server .
 
 #install istio
-curl -L https://istio.io/downloadIstio | sh -
-cd istio-*/
-export PATH=$PWD/bin:$PATH
+# curl -L https://istio.io/downloadIstio | sh -
+# cd istio-*/
+# export PATH=$PWD/bin:$PATH
 
-istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
+# istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
