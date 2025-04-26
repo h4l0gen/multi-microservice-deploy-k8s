@@ -66,3 +66,6 @@ cd $USER_HOME
 curl https://raw.githubusercontent.com/projectcalico/calico/v3.29.3/manifests/calico.yaml -O
 sleep 30
 kubectl apply -f calico.yaml
+
+# untaint kubectl control plane node
+kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-

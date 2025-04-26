@@ -1,8 +1,12 @@
+data "aws_vpc" "default" {
+  default = true
+}
+
 # Create a security group that allows SSH
 resource "aws_security_group" "kapil_sg" {
   name        = "kapil-allow-ssh"
   description = "Allow SSH inbound traffic"
-  vpc_id      = "vpc-0f786d8d14ef29340" 
+  vpc_id      = data.aws_vpc.default.id 
 
   ingress {
     description = "SSH from anywhere"

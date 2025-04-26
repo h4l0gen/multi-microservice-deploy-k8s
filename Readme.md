@@ -27,3 +27,6 @@ aws ec2 describe-instances --instance-ids i-03689a644b8a6e14  --query 'Reservati
 
 
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+
+kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
