@@ -18,7 +18,7 @@ resource "aws_security_group" "kapil_sg" {
 
   ingress {
     description = "allowing loadbalancer nodeport"
-    Type        = "Custom TCP"
+    # Type        = "Custom TCP"
     from_port   = 30556
     to_port     = 30556
     protocol    = "tcp"
