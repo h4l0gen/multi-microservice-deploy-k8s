@@ -74,14 +74,24 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.
 apt-get update
 apt-get install -y helm
 
+# for istio sidecar injection
+kubectl label namespace default istio-injection=enabled
+
 # cloning the repository
 cd $USER_HOME
 git clone https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
-helm install kapil-server .
+helm install kapil-server .   # this is not done, taint is also not done.
 # untaint kubectl control plane node
 ## TODO
 # kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
 
 # deploying workload
 # helm install kapil-server .
+
+#install istio
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-*/
+export PATH=$PWD/bin:$PATH
+
+istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml

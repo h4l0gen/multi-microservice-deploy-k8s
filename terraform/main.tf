@@ -17,10 +17,19 @@ resource "aws_security_group" "kapil_sg" {
   }
 
   ingress {
-    description = "allowing loadbalancer nodeport"
+    description = "allowing ingress http port"
     # Type        = "Custom TCP"
-    from_port   = 30556
-    to_port     = 30556
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "allowing ingress https port"
+    # Type        = "Custom TCP"
+    from_port   = 30443
+    to_port     = 30443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

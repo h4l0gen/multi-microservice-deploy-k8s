@@ -30,3 +30,16 @@ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bas
 
 
 kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
+
+
+User (Browser / curl)
+       ↓
+   Istio IngressGateway (your public gateway)
+       ↓
+     Gateway (selects IngressGateway)
+       ↓
+   VirtualService (routes based on URL path)
+       ↓
+  Service1 / Service2 (K8s services)
+       ↓
+   Pods (with Envoy sidecars)
