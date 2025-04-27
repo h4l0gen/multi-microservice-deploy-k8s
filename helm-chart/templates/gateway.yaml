@@ -13,6 +13,6 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: frontend-credential
+      credentialName: ip-credential
     hosts:
-    - frontend.kapilBoutique.com
+    - "*"

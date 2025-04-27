@@ -95,17 +95,16 @@ $ISTIOCTL install -f /home/ubuntu/multi-microservice-deploy-k8s/istio-config.yam
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
 helm install kapil-server .
 
-mkdir istio_certs1
+mkdir mkdir -p ip_certs
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
 
 openssl req -x509 -sha256 -nodes -days 365 \
   -newkey rsa:2048 \
-  -subj '/O=kapilBoutique Inc./CN=frontend.kapilBoutique.com' \
-  -keyout istio_certs1/frontend.kapilBoutique.com.key \
-  -out istio_certs1/frontend.kapilBoutique.com.crt
+  -subj '/O=kapilBoutique Inc./CN=frontend' \
+  -keyout ip_certs/tls.key \
+  -out ip_certs/tls.crt \
+  -addext "subjectAltName = IP:${NODE_IP}"
 
-kubectl create -n istio-system secret tls frontend-credential \
-  --key=istio_certs1/frontend.kapilBoutique.com.key \
-  --cert=istio_certs1/frontend.kapilBoutique.com.crt
-
-export INGRESS_NAME=istio-ingressgateway
-export INGRESS_NS=istio-system
+kubectl create -n istio-system secret tls ip-credential \
+  --key=ip_certs/tls.key \
+  --cert=ip_certs/tls.crt
