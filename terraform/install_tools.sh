@@ -83,9 +83,12 @@ git clone -b dev https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
 
 
 curl -L https://istio.io/downloadIstio | sh -
+sudo chmod -R +x istio-*/
 cd istio-*/
 export PATH=$PWD/bin:$PATH
+echo "export PATH=\$PATH:$PWD/bin" >> ~/.bashrc
 
+# mostly problem is from here!
 istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
 
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
