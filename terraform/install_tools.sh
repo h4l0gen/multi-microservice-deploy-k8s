@@ -52,7 +52,8 @@ sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket=unix:///var/run
 sleep 30
 
 echo "[*] Setting up kube config"
-USER_HOME="/home/ubuntu" 
+USER_HOME="/home/ubuntu"
+ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
 mkdir -p $USER_HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $USER_HOME/.kube/config
 sudo chown -R ubuntu:ubuntu $USER_HOME/.kube
@@ -93,7 +94,8 @@ source /home/ubuntu/.bashrc
 kubectl label namespace default istio-injection=enabled
 
 # mostly problem is from here!
-/home/ubuntu/istio-1.25.2/bin/istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/templates/istio-config.yaml -y
+ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
+$ISTIOCTL install -f /home/ubuntu/multi-microservice-deploy-k8s/istio-config.yaml -y
 
 kubectl label namespace default test=test
 
