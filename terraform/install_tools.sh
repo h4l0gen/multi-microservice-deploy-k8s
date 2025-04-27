@@ -1,9 +1,5 @@
 #!/bin/bash
 set -e
-set -euxo pipefail
-
-# Wait for networking
-# sleep 60
 
 # Install prerequisites
 apt-get update
@@ -51,8 +47,8 @@ sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket=unix:///var/run
 
 sleep 30
 
-echo "[*] Setting up kube config"
-USER_HOME="/home/ubuntu" 
+USER_HOME="/home/ubuntu"
+ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
 mkdir -p $USER_HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $USER_HOME/.kube/config
 sudo chown -R ubuntu:ubuntu $USER_HOME/.kube
@@ -74,14 +70,41 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.
 apt-get update
 apt-get install -y helm
 
+
 # cloning the repository
 cd $USER_HOME
-git clone https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
+git clone -b dev https://github.com/h4l0gen/multi-microservice-deploy-k8s.git
+
+
+curl -L https://istio.io/downloadIstio | sh -
+sudo chmod -R +x istio-*/
+cd istio-*/
+export PATH=$PWD/bin:$PATH
+echo "export PATH=\$PATH:$PWD/bin" >> /home/ubuntu/.bashrc
+source /home/ubuntu/.bashrc
+
+
+export KUBECONFIG=$USER_HOME/.kube/config
+# for istio sidecar injection
+kubectl label namespace default istio-injection=enabled
+
+# mostly problem is from here!
+ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
+$ISTIOCTL install -f /home/ubuntu/multi-microservice-deploy-k8s/istio-config.yaml -y
+
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
 helm install kapil-server .
-# untaint kubectl control plane node
-## TODO
-# kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
 
-# deploying workload
-# helm install kapil-server .
+mkdir mkdir -p ip_certs
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+
+openssl req -x509 -sha256 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -subj '/O=kapilBoutique Inc./CN=frontend' \
+  -keyout ip_certs/tls.key \
+  -out ip_certs/tls.crt \
+  -addext "subjectAltName = IP:$NODE_IP"
+
+kubectl create -n istio-system secret tls ip-credential \
+  --key=ip_certs/tls.key \
+  --cert=ip_certs/tls.crt

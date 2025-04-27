@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: service1-vs
+  namespace: default
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - {{ .Values.gateway.name }}
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+        # prefix: "/frontend"   # It can be anything if this then, https://frontend.kapilBoutique.com/frontend
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: frontend-external
+        port:
+          number: 80

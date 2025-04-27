@@ -21,6 +21,11 @@ spec:
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Equal"
+          value: ""
+          effect: "NoSchedule"
       containers:
         - name: server
           securityContext:
@@ -97,14 +102,14 @@ metadata:
   labels:
     app: {{ .Values.frontend.name }}
 spec:
-  type: LoadBalancer
+  type: ClusterIP   # no need to loadbalancer as we are using Istio
   selector:
     app: {{ .Values.frontend.name }}
   ports:
   - name: http
     port: 80
     targetPort: 8080
-    nodePort: 30556
+    # nodePort: 30556
 ---
 apiVersion: v1
 kind: ServiceAccount
