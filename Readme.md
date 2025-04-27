@@ -1,3 +1,5 @@
+## Now HTTPS should be implemeneted, then jenkins and argoCD
+
 cat /var/log/cloud-init-output.log
 
 to allow ssh port 22 on ec2 instance
@@ -45,3 +47,34 @@ User (Browser / curl)
   Service1 / Service2 (K8s services)
        ↓
    Pods (with Envoy sidecars)
+
+
+mkdir $USER_HOME/istio_certs1
+
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=kapilBoutique Inc./CN=kapilBoutique.com' -keyout istio_certs1/kapilBoutique.com.key -out istio_certs1/kapilBoutique.com.crt
+
+openssl req -out istio_certs1/frontend.kapilBoutique.com.csr -newkey rsa:2048 -nodes -keyout istio_certs1/frontend.kapilBoutique.com.key -subj "/CN=frontend.kapilBoutique.com/O=frontend organization"
+
+openssl x509 -req -sha256 -days 365 -CA istio_certs1/kapilBoutique.com.crt -CAkey istio_certs1/kapilBoutique.com.key -set_serial 0 -in istio_certs1/frontend.kapilBoutique.com.csr -out istio_certs1/frontend.kapilBoutique.com.crt
+
+mkdir istio_certs2
+
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=kapilBoutique Inc./CN=kapilBoutique.com' -keyout istio_certs2/kapilBoutique.com.key -out istio_certs2/kapilBoutique.com.crt
+
+openssl req -out istio_certs2/frontend.kapilBoutique.com.csr -newkey rsa:2048 -nodes -keyout istio_certs2/frontend.kapilBoutique.com.key -subj "/CN=frontend.kapilBoutique.com/O=frontend organization"
+
+openssl x509 -req -sha256 -days 365 -CA istio_certs2/kapilBoutique.com.crt -CAkey istio_certs2/kapilBoutique.com.key -set_serial 0 -in istio_certs2/frontend.kapilBoutique.com.csr -out istio_certs2/frontend.kapilBoutique.com.crt
+
+
+
+
+
+kubectl create -n istio-system secret tls frontend-credential \
+  --key=istio_certs1/frontend.kapilBoutique.com.key \
+  --cert=istio_certs1/frontend.kapilBoutique.com.crt
+
+
+export INGRESS_NAME=istio-ingressgateway
+export INGRESS_NS=istio-system
+
+curl -v -HHost:frontend.kapilBoutique.com --resolve "frontend.kapilBoutique.com:30443:$INGRESS_HOST"   --cacert istio_certs1/kapilBoutique.com.crt "https://frontend.kapilBoutique.com:30443/status/418"

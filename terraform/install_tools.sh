@@ -1,9 +1,5 @@
 #!/bin/bash
 set -e
-# set -euxo pipefail
-
-# Wait for networking
-# sleep 60
 
 # Install prerequisites
 apt-get update
@@ -51,7 +47,6 @@ sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket=unix:///var/run
 
 sleep 30
 
-echo "[*] Setting up kube config"
 USER_HOME="/home/ubuntu"
 ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
 mkdir -p $USER_HOME/.kube
@@ -75,8 +70,6 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.
 apt-get update
 apt-get install -y helm
 
-# for istio sidecar injection
-kubectl label namespace default istio-injection=enabled
 
 # cloning the repository
 cd $USER_HOME
@@ -90,29 +83,29 @@ export PATH=$PWD/bin:$PATH
 echo "export PATH=\$PATH:$PWD/bin" >> /home/ubuntu/.bashrc
 source /home/ubuntu/.bashrc
 
+
+export KUBECONFIG=$USER_HOME/.kube/config
 # for istio sidecar injection
 kubectl label namespace default istio-injection=enabled
 
-sudo cp /etc/kubernetes/admin.conf $USER_HOME/.kube/config
-sudo chown $(id -u):$(id -g) $USER_HOME/.kube/config
 # mostly problem is from here!
 ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
 $ISTIOCTL install -f /home/ubuntu/multi-microservice-deploy-k8s/istio-config.yaml -y
 
-kubectl label namespace default test=test
-
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
-helm install kapil-server .   # this is not done, taint is also not done.
-# untaint kubectl control plane node
-## TODO
-# kubectl taint nodes ip-172-31-8-54 node-role.kubernetes.io/control-plane:NoSchedule-
+helm install kapil-server .
 
-# deploying workload
-# helm install kapil-server .
+mkdir istio_certs1
 
-#install istio
-# curl -L https://istio.io/downloadIstio | sh -
-# cd istio-*/
-# export PATH=$PWD/bin:$PATH
+openssl req -x509 -sha256 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -subj '/O=kapilBoutique Inc./CN=frontend.kapilBoutique.com' \
+  -keyout istio_certs1/frontend.kapilBoutique.com.key \
+  -out istio_certs1/frontend.kapilBoutique.com.crt
 
-# istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
+kubectl create -n istio-system secret tls frontend-credential \
+  --key=istio_certs1/frontend.kapilBoutique.com.key \
+  --cert=istio_certs1/frontend.kapilBoutique.com.crt
+
+export INGRESS_NAME=istio-ingressgateway
+export INGRESS_NS=istio-system

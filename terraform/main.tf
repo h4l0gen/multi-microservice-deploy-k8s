@@ -17,6 +17,22 @@ resource "aws_security_group" "kapil_sg" {
   }
 
   ingress {
+    description = "Allow HTTPS traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow HTTP traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "allowing ingress http port"
     # Type        = "Custom TCP"
     from_port   = 30080

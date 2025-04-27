@@ -5,13 +5,14 @@ metadata:
   namespace: default
 spec:
   hosts:
-  - "*"
+  - "frontend.kapilBoutique.com"
   gateways:
   - {{ .Values.gateway.name }}
   http:
   - match:
     - uri:
-        prefix: "/frontend-external"
+        prefix: "/"
+        # prefix: "/frontend"   # It can be anything if this then, https://frontend.kapilBoutique.com/frontend
     rewrite:
       uri: "/"
     route:
