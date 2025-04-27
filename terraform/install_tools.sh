@@ -96,7 +96,7 @@ kubectl taint nodes $(kubectl get nodes --no-headers | awk '{print $1}') node-ro
 kubectl label namespace default istio-injection=enabled
 
 # mostly problem is from here!
-istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/templates/istio-config.yaml -y
+/home/ubuntu/istio-*/bin/istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/templates/istio-config.yaml -y
 
 kubectl label namespace default test=test
 

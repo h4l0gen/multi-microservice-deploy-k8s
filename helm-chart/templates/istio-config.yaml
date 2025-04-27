@@ -21,3 +21,17 @@ spec:
             port: 443
             targetPort: 8443
             nodePort: 30443   # <-- YOUR fixed NodePort for HTTPS
+        tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Equal"
+          value: "NoSchedule"
+          effect: "NoSchedule"
+
+    istiod:
+      enabled: true
+      k8s:
+        tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Equal"
+          value: "NoSchedule"
+          effect: "NoSchedule"
