@@ -86,8 +86,8 @@ curl -L https://istio.io/downloadIstio | sh -
 sudo chmod -R +x istio-*/
 cd istio-*/
 export PATH=$PWD/bin:$PATH
-echo "export PATH=\$PATH:$PWD/bin" >> ~/.bashrc
-
+echo "export PATH=\$PATH:$PWD/bin" >> /home/ubuntu/.bashrc
+source /home/ubuntu/.bashrc
 # mostly problem is from here!
 istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
 
