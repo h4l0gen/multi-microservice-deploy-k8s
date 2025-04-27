@@ -1,3 +1,5 @@
+cat /var/log/cloud-init-output.log
+
 to allow ssh port 22 on ec2 instance
 
 aws ec2 describe-instances \
