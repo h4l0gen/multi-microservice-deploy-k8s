@@ -24,6 +24,11 @@ spec:
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+      # tolerations:
+      #   - key: "node-role.kubernetes.io/control-plane"
+      #     operator: "Equal"
+      #     value: ""
+      #     effect: "NoSchedule"
       # initcontainer is mentioned here
       # no service, because it does not accepting any traffic, it is just sending the traffic. Same thing why port is not exposed.
       initContainers:

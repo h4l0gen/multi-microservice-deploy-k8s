@@ -1,4 +1,5 @@
-## Now HTTPS should be implemeneted, then jenkins and argoCD
+## jenkins and argoCD left
+## https://52.3.235.120:30443/     on brave browser
 
 cat /var/log/cloud-init-output.log
 

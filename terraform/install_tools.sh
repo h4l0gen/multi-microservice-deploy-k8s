@@ -103,7 +103,7 @@ openssl req -x509 -sha256 -nodes -days 365 \
   -subj '/O=kapilBoutique Inc./CN=frontend' \
   -keyout ip_certs/tls.key \
   -out ip_certs/tls.crt \
-  -addext "subjectAltName = IP:${NODE_IP}"
+  -addext "subjectAltName = IP:$NODE_IP"
 
 kubectl create -n istio-system secret tls ip-credential \
   --key=ip_certs/tls.key \
