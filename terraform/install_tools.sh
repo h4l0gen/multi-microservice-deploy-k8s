@@ -88,8 +88,17 @@ cd istio-*/
 export PATH=$PWD/bin:$PATH
 echo "export PATH=\$PATH:$PWD/bin" >> /home/ubuntu/.bashrc
 source /home/ubuntu/.bashrc
+
+kubectl taint nodes $(kubectl get nodes --no-headers | awk '{print $1}') node-role.kubernetes.io/control-plane:NoSchedule-
+
+
+# for istio sidecar injection
+kubectl label namespace default istio-injection=enabled
+
 # mostly problem is from here!
-istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/istio-config.yaml
+istioctl install -f /home/ubuntu/multi-microservice-deploy-k8s/helm-chart/templates/istio-config.yaml -y
+
+kubectl label namespace default test=test
 
 cd /home/ubuntu/multi-microservice-deploy-k8s/helm-chart
 helm install kapil-server .   # this is not done, taint is also not done.
