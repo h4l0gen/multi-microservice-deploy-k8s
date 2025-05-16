@@ -295,3 +295,36 @@ http://<node-ip>:32000
 ### to see jenkins server logs, Alternatively, stern tool can be used to watch multiple pods' logs.
 while sleep 0.1 ; do kubectl logs -f -l app=jenkins-server -n devops-tools ; done &
 
+
+
+# jenkins installing using Helm
+helm repo add jenkinsci https://charts.jenkins.io
+helm repo update
+
+kubectl create ns jenkins
+
+sudo mkdir -p /mnt/jenkins
+sudo chown -R 1000:1000 /mnt/jenkins
+
+apply jenkins-pv.yaml
+apply jenkins-pvc.yaml
+
+
+helm install jenkins jenkinsci/jenkins \
+  --namespace jenkins \
+  --create-namespace \
+  --set controller.admin.password=Ks@7777777 \
+  --set controller.serviceType=ClusterIP \
+  --set persistence.enabled=true \
+  --set persistence.existingClaim=pvc-jenkins \
+  --set controller.resources.requests.cpu=200m \
+  --set controller.resources.requests.memory=512Mi \
+  --set controller.installPlugins[0]=kubernetes \
+  --set controller.installPlugins[1]=git \
+  --set controller.installPlugins[2]=workflow-aggregator \
+  --set controller.installPlugins[3]=blueocean \
+  --set controller.tolerations[0].key="node-role.kubernetes.io/control-plane" \
+  --set controller.tolerations[0].operator="Exists" \
+  --set controller.tolerations[0].effect="NoSchedule"
+
+

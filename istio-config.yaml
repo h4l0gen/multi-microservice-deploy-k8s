@@ -16,11 +16,11 @@ spec:
               - name: http2
                 port: 80
                 targetPort: 8080
-                nodePort: 30080 # <-- YOUR fixed NodePort for HTTP
+                nodePort: 30080 # NodePort for HTTP
               - name: https
                 port: 443
                 targetPort: 8443
-                nodePort: 30443 # <-- YOUR fixed NodePort for HTTPS
+                nodePort: 30443 # NodePort for HTTPS
           tolerations:
             - key: "node-role.kubernetes.io/control-plane"
               operator: "Equal"
