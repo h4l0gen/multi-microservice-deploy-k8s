@@ -88,7 +88,7 @@ export KUBECONFIG=$USER_HOME/.kube/config
 # for istio sidecar injection
 kubectl label namespace default istio-injection=enabled
 
-# mostly problem is from here!
+# mostly problem is from here! SOLVED!!
 ISTIOCTL="/home/ubuntu/istio-1.25.2/bin/istioctl"
 $ISTIOCTL install -f /home/ubuntu/multi-microservice-deploy-k8s/istio-config.yaml -y
 
